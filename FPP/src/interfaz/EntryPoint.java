@@ -1,9 +1,6 @@
 package interfaz;
 
-import fpp.BoxEnumerator;
-import fpp.Instance;
-import fpp.Model;
-import fpp.Pool;
+import fpp.*;
 
 public class EntryPoint
 {
@@ -13,6 +10,9 @@ public class EntryPoint
 
 		Pool pool = new Pool();
 		BoxEnumerator.run(instance, pool);
+		ReinforcedBoxEnumerator.run(instance, pool);
+		Box3D12Enumerator.run(instance, pool);
+		Box3D23Enumerator.run(instance, pool);
 
 //		Model model = new Model(instance);
 		Model model = new Model(instance, pool);
