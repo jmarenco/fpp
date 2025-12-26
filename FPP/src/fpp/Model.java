@@ -11,12 +11,19 @@ import ilog.cplex.IloCplex;
 public class Model
 {
 	private Instance _instance;
+	private Pool _pool;
 	private IloCplex _cplex;
 	private Map<Codeword,IloNumVar> _x;
 	
 	public Model(Instance instance)
 	{
 		_instance = instance;
+	}
+	
+	public Model(Instance instance, Pool pool)
+	{
+		_instance = instance;
+		_pool = pool;
 	}
 	
 	public void solve()
@@ -72,7 +79,25 @@ public class Model
 
 	private void solveModel() throws IloException
 	{
+		if( _pool != null )
+			_cplex.use(new Separator(this));
+		
 		_cplex.solve();
 		_cplex.end();
+	}
+	
+	protected IloCplex getCplex()
+	{
+		return _cplex;
+	}
+	
+	protected Map<Codeword,IloNumVar> getVariables()
+	{
+		return _x;
+	}
+	
+	protected Pool getPool()
+	{
+		return _pool;
 	}
 }
