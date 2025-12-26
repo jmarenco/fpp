@@ -82,7 +82,20 @@ public class Model
 		if( _pool != null )
 			_cplex.use(new Separator(this));
 		
+		long start = System.currentTimeMillis();
+		
 		_cplex.solve();
+		
+		System.out.println();
+		System.out.println("Status: " + _cplex.getStatus());
+		System.out.println("Objective: " + _cplex.getObjValue());
+		System.out.println("Nodes: " + _cplex.getNnodes());
+		System.out.println("Time: " + String.format("%.2f", (System.currentTimeMillis() - start) / 1000.0) + " sec.");
+		System.out.println();
+		
+		if( _pool != null )
+			Separator.showStatistics();
+
 		_cplex.end();
 	}
 	

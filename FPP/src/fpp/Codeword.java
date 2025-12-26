@@ -56,6 +56,19 @@ public class Codeword
 		return ret;
 	}
 	
+	public Codeword clone(int... p)
+	{
+		Codeword ret = new Codeword(this.size());
+		
+		for(int i=0; i<this.size(); ++i)
+			ret.set(i, this.get(i));
+		
+		for(int i=0; i+1<p.length; i+=2)
+			ret.set(p[i], p[i+1]);
+		
+		return ret;
+	}
+	
 	@Override public String toString()
 	{
 		String ret = "";

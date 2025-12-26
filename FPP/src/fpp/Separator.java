@@ -10,10 +10,11 @@ public class Separator extends IloCplex.UserCutCallback
 {
 	private IloCplex _cplex;
 	private Pool _pool;
-	private Map<String, Integer> _cuts;
+	private static Map<String, Integer> _cuts;
 	private Map<Codeword, IloNumVar> _x;
 	
 	private static double _threshold = 0.1;
+	private static boolean _verbose = false;
 	
 	public Separator(Model model)
 	{
@@ -37,6 +38,9 @@ public class Separator extends IloCplex.UserCutCallback
 		{
 			this.add(range(dv), IloCplex.CutManagement.UseCutForce);
 			_cuts.put(family, _cuts.get(family)+1);
+			
+			if( _verbose == true )
+				System.out.println("**** " + family + "! -  Total: " + _cuts.get(family));
 		}
 	}
 	
@@ -46,7 +50,7 @@ public class Separator extends IloCplex.UserCutCallback
 		for(Codeword c: inequality.support())
 			lhs += inequality.get(c) * this.getValue(_x.get(c));
 		
-		return lhs + _threshold >= inequality.getRhs();
+		return lhs + _threshold <= inequality.getRhs();
 	}
 	
 	private IloRange range(Inequality inequality) throws IloException
@@ -56,6 +60,18 @@ public class Separator extends IloCplex.UserCutCallback
 		for(Codeword c: inequality.support())
 			lhs = _cplex.sum(lhs, _cplex.prod(inequality.get(c), _x.get(c)));
 		
-		return _cplex.le(lhs, inequality.getRhs());
+		return _cplex.ge(lhs, inequality.getRhs());
+	}
+	
+	public static void showStatistics()
+	{
+		int sum = 0;
+		for(String family: _cuts.keySet())
+		{
+			System.out.println(family + ": " + _cuts.get(family) + " cuts");
+			sum += _cuts.get(family);
+		}
+		
+		System.out.println(sum + " total cuts");
 	}
 }
