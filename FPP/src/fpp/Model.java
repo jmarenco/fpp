@@ -14,6 +14,7 @@ public class Model
 	private Pool _pool;
 	private IloCplex _cplex;
 	private Map<Codeword,IloNumVar> _x;
+	private int _maxNodes = 0;
 	
 	public Model(Instance instance)
 	{
@@ -84,11 +85,16 @@ public class Model
 		
 		long start = System.currentTimeMillis();
 		
+		if( _maxNodes > 0 )
+			_cplex.setParam(IloCplex.Param.MIP.Limits.Nodes, _maxNodes);
+
 		_cplex.solve();
 		
 		System.out.println();
 		System.out.println("Status: " + _cplex.getStatus());
 		System.out.println("Objective: " + _cplex.getObjValue());
+		System.out.println("Dual: " + _cplex.getBestObjValue());
+		System.out.println("Gap: " + _cplex.getMIPRelativeGap());
 		System.out.println("Nodes: " + _cplex.getNnodes());
 		System.out.println("Time: " + String.format("%.2f", (System.currentTimeMillis() - start) / 1000.0) + " sec.");
 		System.out.println();
@@ -97,6 +103,11 @@ public class Model
 			Separator.showStatistics();
 
 		_cplex.end();
+	}
+	
+	public void setMaxNodes(int maxNodes)
+	{
+		_maxNodes = maxNodes;
 	}
 	
 	protected IloCplex getCplex()

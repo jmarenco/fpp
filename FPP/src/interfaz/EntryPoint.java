@@ -33,6 +33,10 @@ public class EntryPoint
 			pool = null;
 
 		Model model = new Model(instance, pool);
+		
+		if( argmap.containsArg("-root") )
+			model.setMaxNodes(1);
+
 		model.solve();
 	}
 }
