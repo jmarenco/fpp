@@ -112,6 +112,7 @@ public class Model
 			_cplex.setParam(IloCplex.Param.MIP.Strategy.PresolveNode, -1);
 		}
 		
+		_cplex.setParam(IloCplex.Param.MIP.Interval, 1);
 		_cplex.solve();
 		
 		System.out.println();
