@@ -36,6 +36,12 @@ public class EntryPoint
 		
 		if( argmap.containsArg("-root") )
 			model.setMaxNodes(1);
+		
+		if( argmap.containsArg("-nodes") )
+			model.setMaxNodes(argmap.intArg("-nodes", 100000000));
+
+		if( argmap.containsArg("-nomagic") )
+			model.useCplexMagic(false);
 
 		model.solve();
 	}

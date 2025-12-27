@@ -15,6 +15,7 @@ public class Model
 	private IloCplex _cplex;
 	private Map<Codeword,IloNumVar> _x;
 	private int _maxNodes = 0;
+	private boolean _cplexMagic = true;
 	
 	public Model(Instance instance)
 	{
@@ -88,6 +89,29 @@ public class Model
 		if( _maxNodes > 0 )
 			_cplex.setParam(IloCplex.Param.MIP.Limits.Nodes, _maxNodes);
 
+		if( _cplexMagic == false )
+		{
+			_cplex.setParam(IloCplex.Param.Preprocessing.Presolve, false);
+			_cplex.setParam(IloCplex.Param.MIP.Cuts.BQP, -1);
+			_cplex.setParam(IloCplex.Param.MIP.Cuts.Cliques, -1);
+			_cplex.setParam(IloCplex.Param.MIP.Cuts.Covers, -1);
+			_cplex.setParam(IloCplex.Param.MIP.Cuts.Disjunctive, -1);
+			_cplex.setParam(IloCplex.Param.MIP.Cuts.FlowCovers, -1);
+			_cplex.setParam(IloCplex.Param.MIP.Cuts.Gomory, -1);
+			_cplex.setParam(IloCplex.Param.MIP.Cuts.GUBCovers, -1);
+			_cplex.setParam(IloCplex.Param.MIP.Cuts.Implied, -1);
+			_cplex.setParam(IloCplex.Param.MIP.Cuts.LiftProj, -1);
+			_cplex.setParam(IloCplex.Param.MIP.Cuts.LocalImplied, -1);
+			_cplex.setParam(IloCplex.Param.MIP.Cuts.MCFCut, -1);
+			_cplex.setParam(IloCplex.Param.MIP.Cuts.MIRCut, -1);
+			_cplex.setParam(IloCplex.Param.MIP.Cuts.Nodecuts, -1);
+			_cplex.setParam(IloCplex.Param.MIP.Cuts.PathCut, -1);
+			_cplex.setParam(IloCplex.Param.MIP.Cuts.RLT, -1);
+			_cplex.setParam(IloCplex.Param.MIP.Cuts.ZeroHalfCut, -1);
+			_cplex.setParam(IloCplex.Param.MIP.Strategy.LBHeur, false);
+			_cplex.setParam(IloCplex.Param.MIP.Strategy.PresolveNode, -1);
+		}
+		
 		_cplex.solve();
 		
 		System.out.println();
@@ -108,6 +132,11 @@ public class Model
 	public void setMaxNodes(int maxNodes)
 	{
 		_maxNodes = maxNodes;
+	}
+	
+	public void useCplexMagic(boolean magic)
+	{
+		_cplexMagic = magic;
 	}
 	
 	protected IloCplex getCplex()
