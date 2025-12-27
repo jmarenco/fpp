@@ -6,17 +6,32 @@ public class EntryPoint
 {
 	public static void main(String[] args)
 	{
-		Instance instance = new Instance(5);
+		ArgMap argmap = new ArgMap(args);
+		Instance instance = new Instance(argmap.intArg("-n", 5));
 
 		Pool pool = new Pool();
-		BoxEnumerator.run(instance, pool);
-		ReinforcedBoxEnumerator.run(instance, pool);
-		Box3D12Enumerator.run(instance, pool);
-		Box3D23Enumerator.run(instance, pool);
-		InnerDiamondEnumerator.run(instance, pool);
-		OuterDiamondEnumerator.run(instance, pool);
+		
+		if( argmap.containsArg("-box") )
+			BoxEnumerator.run(instance, pool);
+		
+		if( argmap.containsArg("-rbox") )
+			ReinforcedBoxEnumerator.run(instance, pool);
 
-//		Model model = new Model(instance);
+		if( argmap.containsArg("-3d12") )
+			Box3D12Enumerator.run(instance, pool);
+		
+		if( argmap.containsArg("-3d23") )
+			Box3D23Enumerator.run(instance, pool);
+
+		if( argmap.containsArg("-inner") )
+			InnerDiamondEnumerator.run(instance, pool);
+		
+		if( argmap.containsArg("-outer") )
+			OuterDiamondEnumerator.run(instance, pool);
+		
+		if( pool.families().size() == 0 )
+			pool = null;
+
 		Model model = new Model(instance, pool);
 		model.solve();
 	}
